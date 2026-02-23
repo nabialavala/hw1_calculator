@@ -7,30 +7,14 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const CalculatorScreen(),
     );
   }
 }
@@ -38,15 +22,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
+  
   final String title;
 
   @override
@@ -58,51 +34,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('You have pushed the button this many times:'),
             Text(
@@ -116,6 +61,142 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+//adding calculator UI class
+class CalculatorScreen extends StatefulWidget {
+  const CalculatorScreen({super.key});
+  @override
+  State<CalculatorScreen> createState() => _CalculatorScreenState();
+}
+//createing screen state
+class _CalculatorScreenState extends State<CalculatorScreen> {
+  //creating display string variable
+  String _display = "0";
+
+  //helper method to print labels for buttons
+  Widget _buildButton(String label) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(6),
+        child: ElevatedButton(
+          onPressed: () {
+            print(label);
+          },
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 22),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Center(
+          child:Container(
+            width: 380,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color:  const Color(0xFF1B1F2A),
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: const[
+                BoxShadow(
+                  color: Colors.black54,
+                  blurRadius: 30,
+                  offset: Offset(0, 20),
+                )
+              ]
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.bottomRight,
+                    padding: const EdgeInsets.all(20),
+                    child: Text(
+                      _display,
+                      style: const TextStyle(
+                        fontSize: 48,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                //creating rows of buttons
+                Row( //Row 1
+                  children: [
+                    _buildButton("C"),
+                    _buildButton("±"), //1
+                    _buildButton("÷"),//2
+                    _buildButton("x"),
+                  ],
+                ),
+                Row( //Row 2
+                  children: [
+                    _buildButton("7"),
+                    _buildButton("8"), //1
+                    _buildButton("9"),//2
+                    _buildButton("-"),
+                  ],
+                ),
+                Row( //Row 3
+                  children: [
+                    _buildButton("4"),
+                    _buildButton("5"), //1
+                    _buildButton("6"),//2
+                    _buildButton("+"),
+                  ],
+                ),
+                Row( //Row 4
+                  children: [
+                    _buildButton("1"),
+                    _buildButton("2"), //1
+                    _buildButton("3"),//2
+                    _buildButton("="),
+                  ],
+                ),
+                Row( //Row 5
+                  children: [ 
+                    Expanded(
+                      flex: 3,//'0' button need to be the full length of 3
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: ElevatedButton(
+                          onPressed: () => print('0'),
+                          child: const Text(
+                            '0',
+                            style: TextStyle(fontSize: 22),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1, //takes the remaining 1
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: ElevatedButton(
+                          onPressed: () => print("."),
+                          child: const Text(
+                            '.',
+                            style: TextStyle(fontSize: 22),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
