@@ -76,6 +76,126 @@ class CalculatorScreen extends StatefulWidget {
 class _CalculatorScreenState extends State<CalculatorScreen> {
   //creating display string variable
   String _display = "0";
+  //variable to hold values and clear display
+  double? _firstNumber;
+  String? _operator;
+  bool _clearDisplay = false;
+
+  double _formatDisplay() {
+    if (_display.endsWith('.')) {
+      return double.parse(_display + '0'); //adds a 0 if no number after decimal
+    }
+    return double.parse(_display);
+  }
+
+  //heper method to hanle the pressing of buttons
+  void _handlePress(String label) {
+    setState(() {
+      //if theres an erro message and user presses another button
+      if (_display == 'Error' && int.tryParse(label) != null) {
+        _display = label;
+        _clearDisplay = false;
+        return;
+      }
+      if (_display == "Error" && label == '.') {
+        _display = '0.';
+        _clearDisplay = false;
+        return;
+      }
+      if (_display == 'Error' && (label == '+' || label == '-' || label == 'x' || label == '÷' || label == '=' || label == '±')) {
+        _display = '0';
+        _firstNumber = null;
+        _operator = null;
+        _clearDisplay = false;
+      }
+      if (int.tryParse(label) != null) {//is a number
+        if (_clearDisplay) {
+          _display = label;
+          _clearDisplay = false;
+        } else if (_display == '0') {
+          _display = label;
+        } else {
+          _display = _display + label;
+        }
+      } else if (label == '+') {
+        _firstNumber = _formatDisplay();//set first number
+        _operator = label; //store operator
+        _clearDisplay = true; // clears display for second number
+      } else if (label == '-') {
+        _firstNumber = _formatDisplay();//set first number
+        _operator = label; //store operator
+        _clearDisplay = true; // clears display for second number
+      } else if (label == '÷') {
+        _firstNumber = _formatDisplay();//set first number
+        _operator = label; //store operator
+        _clearDisplay = true; // clears display for second number
+      } else if (label == 'x') {
+        _firstNumber = _formatDisplay();//set first number
+        _operator = label; //store operator
+        _clearDisplay = true; // clears display for second number
+      } else if (label == '=') {//if the operator is equal
+      _calculateResult();//helper method
+      } else if (label == '.') {
+        if (_clearDisplay) {//theres no whold number
+          _display = '0.';
+          _clearDisplay = false;
+        } else {
+          if (!_display.contains('.')) {
+            _display+='.';
+          }
+        }
+      } else if (label == 'C') {
+        _display = '0';
+        _firstNumber = null;
+        _operator = null;
+        _clearDisplay = false;
+      } else if (label == '±') {
+        if (_display.startsWith('-')) {
+          _display = _display.substring(1); //remove the negative sign
+        } else {
+          _display = '-$_display';
+        }
+      }
+    });
+  }
+
+  //helper method to calculate when '=' is pressed
+  void _calculateResult() {
+    if (_clearDisplay) {// no second number
+      _display = 'Error';
+      _clearDisplay = true;
+      return;
+    } else if (_firstNumber ==null || _operator == null) {
+      _display = 'Error';
+      _clearDisplay = true;
+      return;
+    }
+    double a = _firstNumber!;
+    double b = _formatDisplay();//convert from string to double
+    String op = _operator!;
+    double res;
+    if (op == '+') {
+      res = a + b;
+    } else if (op == '-') {
+      res = a - b;
+    } else if (op == 'x') {
+      res = a * b;
+    } else if (op == '÷') {
+      if (b == 0){ //handle divide by 0 error
+        _display = 'Error';
+        _clearDisplay = true;
+        return;
+      } else {
+        res = a / b;
+      }
+      
+    } else {
+      return;
+    }
+    _display = res.toStringAsFixed(2);
+    _clearDisplay = true;
+    }
+  
 
   //helper method to print labels for buttons
   Widget _buildButton(String label) {
@@ -84,7 +204,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         padding: const EdgeInsets.all(6),
         child: ElevatedButton(
           onPressed: () {
-            print(label);
+            _handlePress(label);
           },
           child: Text(
             label,
@@ -170,7 +290,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(6),
                         child: ElevatedButton(
-                          onPressed: () => print('0'),
+                          onPressed: () => _handlePress('0'),
                           child: const Text(
                             '0',
                             style: TextStyle(fontSize: 22),
@@ -183,7 +303,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(6),
                         child: ElevatedButton(
-                          onPressed: () => print("."),
+                          onPressed: () => _handlePress("."),
                           child: const Text(
                             '.',
                             style: TextStyle(fontSize: 22),
