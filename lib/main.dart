@@ -102,7 +102,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         _clearDisplay = false;
         return;
       }
-      if (_display == 'Error' && (label == '+' || label == '-' || label == 'x' || label == '÷' || label == '=' || label == '±')) {
+      if (_display == 'Error' && (label == '+' || label == '-' || label == 'x' || label == '÷' || label == '=' || label == '±' || label == '%')) {
         _display = '0';
         _firstNumber = null;
         _operator = null;
@@ -133,6 +133,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         _firstNumber = _formatDisplay();//set first number
         _operator = label; //store operator
         _clearDisplay = true; // clears display for second number
+      } else if (label == '%') {
+        _percentConversion();//helper method
       } else if (label == '=') {//if the operator is equal
       _calculateResult();//helper method
       } else if (label == '.') {
@@ -157,6 +159,22 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         }
       }
     });
+  }
+
+  //helper method for percentage
+  void _percentConversion() {
+    double temp = _formatDisplay(); //store current display value
+    if (_operator == null) { //no operator stored -> only one number
+      temp = temp/100.0;
+    } else if (_operator != null ){ //there's an operator
+      if (_operator == '+' || _operator == '-') {
+        temp = _firstNumber!*(temp/100.0);
+      } else if (_operator == 'x' || _operator == '÷'){
+        temp = temp/100.0;
+      }
+    }
+    _display = temp.toStringAsFixed(2);
+    _clearDisplay = false;
   }
 
   //helper method to calculate when '=' is pressed
@@ -188,7 +206,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       } else {
         res = a / b;
       }
-      
     } else {
       return;
     }
@@ -255,8 +272,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   children: [
                     _buildButton("C"),
                     _buildButton("±"), //1
-                    _buildButton("÷"),//2
-                    _buildButton("x"),
+                    _buildButton("%"),//2
+                    _buildButton("÷"),
                   ],
                 ),
                 Row( //Row 2
@@ -264,7 +281,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     _buildButton("7"),
                     _buildButton("8"), //1
                     _buildButton("9"),//2
-                    _buildButton("-"),
+                    _buildButton("x"),
                   ],
                 ),
                 Row( //Row 3
@@ -272,7 +289,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     _buildButton("4"),
                     _buildButton("5"), //1
                     _buildButton("6"),//2
-                    _buildButton("+"),
+                    _buildButton("-"),
                   ],
                 ),
                 Row( //Row 4
@@ -280,13 +297,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     _buildButton("1"),
                     _buildButton("2"), //1
                     _buildButton("3"),//2
-                    _buildButton("="),
+                    _buildButton("+"),
                   ],
                 ),
                 Row( //Row 5
                   children: [ 
                     Expanded(
-                      flex: 3,//'0' button need to be the full length of 3
+                      flex: 2,//'0' button need to be the full length of 3
                       child: Padding(
                         padding: const EdgeInsets.all(6),
                         child: ElevatedButton(
@@ -306,6 +323,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           onPressed: () => _handlePress("."),
                           child: const Text(
                             '.',
+                            style: TextStyle(fontSize: 22),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1, //takes the remaining 1
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: ElevatedButton(
+                          onPressed: () => _handlePress("="),
+                          child: const Text(
+                            '=',
                             style: TextStyle(fontSize: 22),
                           ),
                         ),
