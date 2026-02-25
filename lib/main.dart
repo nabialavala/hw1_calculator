@@ -216,10 +216,24 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   //helper method to print labels for buttons
   Widget _buildButton(String label) {
+    Color buttonColor;
+    const Color pastelPink = Color(0xFFFF9EC9);
+    const Color creamBeige = Color(0xFFF5E6D3);
+    const Color chocolateBrown = Color(0xFF6B4F3B);
+    if (int.tryParse(label) != null) {//if it's a digit
+      buttonColor = creamBeige;
+    } else {
+      buttonColor = pastelPink;
+    }
+
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(6),
         child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: buttonColor,
+            foregroundColor: chocolateBrown,
+          ),
           onPressed: () {
             _handlePress(label);
           },
@@ -235,14 +249,21 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xFFFFD6E7), //light pink
+      appBar: AppBar(
+        title: const Text("Nabia's Calculator"),
+        centerTitle: true,
+        backgroundColor: const Color(0xFFFFB6D5), //pink 
+        foregroundColor: const Color(0xFF6B4F3B), //brown
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Center(
           child:Container(
             width: 380,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color:  const Color(0xFF1B1F2A),
+              color:  const Color(0xFF6B4F3B), //brown
               borderRadius: BorderRadius.circular(28),
               boxShadow: const[
                 BoxShadow(
@@ -307,6 +328,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(6),
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFFF5E6D3),
+                          ),
                           onPressed: () => _handlePress('0'),
                           child: const Text(
                             '0',
@@ -320,6 +344,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(6),
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFFF5E6D3),
+                          ),
                           onPressed: () => _handlePress("."),
                           child: const Text(
                             '.',
@@ -333,6 +360,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(6),
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFFFF9EC9),
+                          ),
                           onPressed: () => _handlePress("="),
                           child: const Text(
                             '=',
